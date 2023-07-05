@@ -15,12 +15,12 @@ public class ItemMapper {
         String name = item.getName();
         String description = item.getDescription();
         Boolean isAvailable = item.getIsAvailable();
-        ItemRequest request = item.getRequest() ;
+        ItemRequest request = item.getRequest();
         return new ItemDto(id, name, description, isAvailable,  request);
     }
 
     public Item toItem(ItemDto itemDto) {
-        return new Item(itemDto.getId(), itemDto.getName(), itemDto.getDescription(), itemDto.getIsAvailable(),  itemDto.getRequest() );
+        return new Item(itemDto.getId(), itemDto.getName(), itemDto.getDescription(), itemDto.getIsAvailable(),  itemDto.getRequest());
     }
 
 }

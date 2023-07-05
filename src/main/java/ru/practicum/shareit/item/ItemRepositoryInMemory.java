@@ -75,7 +75,7 @@ public class ItemRepositoryInMemory implements ItemRepository {
     @Override
     public List<Item> getItems(Long userId) {
         List<Item> result = new ArrayList<>();
-        for(Item item : items.values()) {
+        for (Item item : items.values()) {
             if (item.getOwner().equals(userId)) {
                 result.add(item);
             }
