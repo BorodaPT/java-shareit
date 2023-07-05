@@ -41,7 +41,7 @@ public class UserRepositoryInMemory implements UserRepository {
             throw new ExceptionNotFound("createUser","Пользователь уже зарегестрирован");
         } else {
             for (User userF : users.values()) {
-                if (userF.getEmail().equals(user.getEmail())){
+                if (userF.getEmail().equals(user.getEmail())) {
                     throw new ExceptionDataRequest("createUser","Email уже зарегестрирован");
                 }
             }
