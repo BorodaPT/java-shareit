@@ -1,19 +1,17 @@
 package ru.practicum.shareit.exception;
 
 import org.springframework.http.HttpStatus;
-import org.springframework.web.bind.annotation.ControllerAdvice;
-import org.springframework.web.bind.annotation.ExceptionHandler;
-import org.springframework.web.bind.annotation.ResponseBody;
-import org.springframework.web.bind.annotation.ResponseStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.Map;
 
 @ControllerAdvice
 public class ErrorHandlingControllerAdvice {
 
     @ExceptionHandler(ExceptionDataRequest.class)
-    @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
-    @ResponseBody
-    public DefaultMessageException onExceptionDataRequest(ExceptionDataRequest e) {
-        return new DefaultMessageException(e.getNameExcept(), e.getMessage());
+    public ResponseEntity<Map<String, String>> onExceptionDataRequest(ExceptionDataRequest e) {
+        return new ResponseEntity<>(Map.of(e.getNameExcept(), e.getMessage()), e.getStatus());//
     }
 
     //ошибка наличия

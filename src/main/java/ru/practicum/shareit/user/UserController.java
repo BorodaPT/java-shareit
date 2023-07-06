@@ -19,32 +19,29 @@ public class UserController {
     @Autowired
     private UserService userService;
 
-    @Autowired
-    private UserMapper userMapper;
-
     @GetMapping
     public List<UserDTO> getUsers() {
-        return userService.getUsers().stream().map(userMapper::toDTO).collect(toList());
+        return userService.getUsers().stream().map(UserMapper::toDTO).collect(toList());
     }
 
 
     @GetMapping("/{id}")
     public UserDTO getUser(@PathVariable("id") Long id) {
-        return userMapper.toDTO(userService.getUser(id));
+        return UserMapper.toDTO(userService.getUser(id));
     }
 
     @PostMapping
     public UserDTO addUser(@Valid @RequestBody UserDTO userDTO) {
-        User user = userService.create(userMapper.toUser(userDTO));
-        return userMapper.toDTO(user);
+        User user = userService.create(UserMapper.toUser(userDTO));
+        return UserMapper.toDTO(user);
     }
 
     @PatchMapping("/{userId}")
     public UserDTO updateUser(@Valid @RequestBody UserDTO userDTO,
                               @PathVariable("userId") Long userId) {
-        User user = userMapper.toUser(userDTO);
+        User user = UserMapper.toUser(userDTO);
         user.setId(userId);
-        return userMapper.toDTO(userService.edit(user));
+        return UserMapper.toDTO(userService.edit(user));
     }
 
     @DeleteMapping("/{userId}")

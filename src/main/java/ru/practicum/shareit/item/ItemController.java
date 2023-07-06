@@ -18,44 +18,35 @@ public class ItemController {
     @Autowired
     private ItemService itemService;
 
-    @Autowired
-    private ItemMapper itemMapper;
-
     @PostMapping
     public ItemDto create(@RequestHeader("X-Sharer-User-Id") Long userId,
                           @Valid @RequestBody ItemDto itemDto) {
-        Item item = itemMapper.toItem(itemDto);
+        Item item = ItemMapper.toItem(itemDto);
         item.setOwner(userId);
-        return itemMapper.toDTO(itemService.create(item));
+        return ItemMapper.toDTO(itemService.create(item));
     }
 
     @PatchMapping("/{itemId}")
     public ItemDto edit(@RequestHeader("X-Sharer-User-Id") Long userId,
                         @PathVariable("itemId") Long idItem,
                         @RequestBody ItemDto itemDto) {
-        Item item = itemMapper.toItem(itemDto);
-        return itemMapper.toDTO(itemService.edit(item,idItem,userId));
+        Item item = ItemMapper.toItem(itemDto);
+        return ItemMapper.toDTO(itemService.edit(item,idItem,userId));
     }
 
     @GetMapping
     public List<ItemDto> getItems(@RequestHeader("X-Sharer-User-Id") Long userId) {
-        return itemService.getItems(userId).stream().map(itemMapper::toDTO).collect(toList());
+        return itemService.getItems(userId).stream().map(ItemMapper::toDTO).collect(toList());
     }
 
     @GetMapping("/{itemId}")
     public ItemDto get(@PathVariable("itemId") Long idItem) {
-        return itemMapper.toDTO(itemService.get(idItem));
+        return ItemMapper.toDTO(itemService.get(idItem));
     }
 
     @GetMapping("/search")
     public List<ItemDto> search(@RequestParam(name = "text", required = false) String text) {
-        return itemService.search(text).stream().map(itemMapper::toDTO).collect(toList());
+        return itemService.search(text).stream().map(ItemMapper::toDTO).collect(toList());
     }
-
-
-
-
-
-
 
 }

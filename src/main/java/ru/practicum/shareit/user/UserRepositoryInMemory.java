@@ -1,5 +1,6 @@
 package ru.practicum.shareit.user;
 
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Component;
 import ru.practicum.shareit.exception.ExceptionDataRequest;
 import ru.practicum.shareit.exception.ExceptionNotFound;
@@ -42,7 +43,7 @@ public class UserRepositoryInMemory implements UserRepository {
         } else {
             for (User userF : users.values()) {
                 if (userF.getEmail().equals(user.getEmail())) {
-                    throw new ExceptionDataRequest("createUser","Email уже зарегестрирован");
+                    throw new ExceptionDataRequest("createUser","Email уже зарегестрирован", HttpStatus.CONFLICT);
                 }
             }
             id++;
@@ -58,7 +59,7 @@ public class UserRepositoryInMemory implements UserRepository {
             User userBase = users.get(user.getId());
             for (User userF : users.values()) {
                 if (userF.getEmail().equals(user.getEmail()) && !userF.getId().equals(user.getId())) {
-                    throw new ExceptionDataRequest("createUser","Email уже зарегестрирован");
+                    throw new ExceptionDataRequest("createUser","Email уже зарегестрирован", HttpStatus.CONFLICT);
                 }
             }
             if (user.getName() != null) {

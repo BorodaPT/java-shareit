@@ -2,7 +2,9 @@ package ru.practicum.shareit.item;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Component;
+import ru.practicum.shareit.exception.ExceptionDataRequest;
 import ru.practicum.shareit.exception.ExceptionNotFound;
 import ru.practicum.shareit.item.model.Item;
 import ru.practicum.shareit.user.UserRepositoryInMemory;
@@ -43,7 +45,7 @@ public class ItemRepositoryInMemory implements ItemRepository {
         if (items.containsKey(idItem)) {
             Item itemBase = items.get(idItem);
             if (itemBase.getOwner() != idUser) {
-                throw new ExceptionNotFound("updateItem","Операция вызвана не владельцем");
+                throw new ExceptionDataRequest("updateItem","Операция вызвана не владельцем", HttpStatus.FORBIDDEN);
             } else {
                 item.setOwner(idUser);
                 if (item.getIsAvailable() != null) {
