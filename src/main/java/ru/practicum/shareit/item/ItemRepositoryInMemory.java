@@ -2,9 +2,7 @@ package ru.practicum.shareit.item;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Component;
-import ru.practicum.shareit.exception.ExceptionDataRequest;
 import ru.practicum.shareit.exception.ExceptionNotFound;
 import ru.practicum.shareit.item.model.Item;
 import ru.practicum.shareit.user.UserRepositoryInMemory;
@@ -14,7 +12,7 @@ import java.util.HashMap;
 import java.util.List;
 
 @Component("itemRepositoryInMemory")
-public class ItemRepositoryInMemory implements ItemRepository {
+public class ItemRepositoryInMemory  {
 
     @Autowired
     @Qualifier("userRepositoryInMemory")
@@ -29,7 +27,7 @@ public class ItemRepositoryInMemory implements ItemRepository {
         items = new HashMap<>();
     }
 
-    @Override
+
     public Item create(Item item) {
         if (!userRepository.users.containsKey(item.getOwner())) {
             throw new ExceptionNotFound("createItem","инициатор не найден");
@@ -40,32 +38,12 @@ public class ItemRepositoryInMemory implements ItemRepository {
         return item;
     }
 
-    @Override
+
     public Item edit(Item item, long idItem, long idUser) {
-        if (items.containsKey(idItem)) {
-            Item itemBase = items.get(idItem);
-            if (itemBase.getOwner() != idUser) {
-                throw new ExceptionDataRequest("updateItem","Операция вызвана не владельцем", HttpStatus.FORBIDDEN);
-            } else {
-                item.setOwner(idUser);
-                if (item.getIsAvailable() != null) {
-                    itemBase.setIsAvailable(item.getIsAvailable());
-                }
-                if (item.getName() != null) {
-                    itemBase.setName(item.getName());
-                }
-                if (item.getDescription() != null) {
-                    itemBase.setDescription(item.getDescription());
-                }
-                items.put(idItem, itemBase);
-                return itemBase;
-            }
-        } else {
-            throw new ExceptionNotFound("updateItem","Вещь для обновления отсутствует");
-        }
+        return null;
     }
 
-    @Override
+
     public Item get(Long id) {
         if (items.containsKey(id)) {
             return items.get(id);
@@ -74,7 +52,7 @@ public class ItemRepositoryInMemory implements ItemRepository {
         }
     }
 
-    @Override
+
     public List<Item> getItems(Long userId) {
         List<Item> result = new ArrayList<>();
         for (Item item : items.values()) {
@@ -85,7 +63,7 @@ public class ItemRepositoryInMemory implements ItemRepository {
         return result;
     }
 
-    @Override
+
     public List<Item> search(String substring) {
         List<Item> result = new ArrayList<>();
         if (!substring.equals("")) {

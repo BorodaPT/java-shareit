@@ -1,31 +1,34 @@
 package ru.practicum.shareit.item.model;
 
+import lombok.AllArgsConstructor;
 import lombok.Data;
-import ru.practicum.shareit.request.model.ItemRequest;
+import lombok.NoArgsConstructor;
+import ru.practicum.shareit.user.model.User;
 
-import javax.validation.constraints.NotEmpty;
+import javax.persistence.*;
 
 @Data
+@NoArgsConstructor
+@AllArgsConstructor
+@Entity
+@Table(name = "items")
 public class Item {
 
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @NotEmpty(message = "Наименование не может быть пустым или состоять только из пробелов")
+    @Column(name = "name", nullable = false)
     private String name;
 
+    @Column(name = "description", nullable = false)
     private String description;
 
+    @Column(name = "is_available", nullable = false)
     private Boolean isAvailable;
 
-    private Long owner;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "owner_id", nullable = false)
+    private User owner;
 
-    private ItemRequest request;
-
-    public Item(Long id, String name, String description, Boolean isAvailable, ItemRequest request) {
-        this.id = id;
-        this.name = name;
-        this.description = description;
-        this.isAvailable = isAvailable;
-        this.request = request;
-    }
 }

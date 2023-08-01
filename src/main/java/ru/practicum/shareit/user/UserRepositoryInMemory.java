@@ -11,7 +11,7 @@ import java.util.HashMap;
 import java.util.List;
 
 @Component("userRepositoryInMemory")
-public class UserRepositoryInMemory implements UserRepository {
+public class UserRepositoryInMemory  {
 
     private long id;
 
@@ -22,7 +22,7 @@ public class UserRepositoryInMemory implements UserRepository {
         users = new HashMap<>();
     }
 
-    @Override
+
     public User getUser(long id) {
         if (users.containsKey(id)) {
             return users.get(id);
@@ -31,12 +31,12 @@ public class UserRepositoryInMemory implements UserRepository {
         }
     }
 
-    @Override
+
     public List<User> getUsers() {
         return new ArrayList<>(users.values());
     }
 
-    @Override
+
     public User create(User user) {
         if (users.containsKey(user.getId())) {
             throw new ExceptionNotFound("createUser","Пользователь уже зарегестрирован");
@@ -53,7 +53,7 @@ public class UserRepositoryInMemory implements UserRepository {
         }
     }
 
-    @Override
+
     public User edit(User user) {
         if (users.containsKey(user.getId())) {
             User userBase = users.get(user.getId());
@@ -76,7 +76,7 @@ public class UserRepositoryInMemory implements UserRepository {
         }
     }
 
-    @Override
+
     public void delete(long id) {
         if (users.containsKey(id)) {
             users.remove(id);
