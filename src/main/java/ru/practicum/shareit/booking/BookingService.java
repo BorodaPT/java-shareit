@@ -7,7 +7,7 @@ import ru.practicum.shareit.booking.model.BookingStatusRequest;
 
 import java.util.List;
 
-@Transactional(readOnly = true)
+@Transactional
 public interface BookingService {
 
     BookingDtoWithItemUser saveNewBooking(BookingDto bookingDto, long userId);

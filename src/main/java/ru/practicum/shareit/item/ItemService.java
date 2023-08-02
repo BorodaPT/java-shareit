@@ -25,6 +25,7 @@ public interface ItemService  {
 
     CommentDTO createComment(CommentDTO commentDTO, Long itemId, Long userId);
 
+    Long countByOwner_id(Long id);
 
 
 

@@ -12,7 +12,9 @@ import ru.practicum.shareit.item.dto.ItemDto;
 import ru.practicum.shareit.item.dto.ItemWithBookingDTO;
 import ru.practicum.shareit.item.model.Comment;
 import ru.practicum.shareit.item.model.Item;
+import ru.practicum.shareit.user.UserMapper;
 import ru.practicum.shareit.user.UserRepository;
+import ru.practicum.shareit.user.UserService;
 import ru.practicum.shareit.user.model.User;
 
 import java.time.LocalDateTime;
@@ -26,7 +28,7 @@ public class ItemServiceImpl implements ItemService {
 
     private final ItemRepository itemRepository;
 
-    private final UserRepository userRepository;
+    private final UserService userService;
 
     private final CommentRepository commentRepository;
 
@@ -35,8 +37,7 @@ public class ItemServiceImpl implements ItemService {
     @Transactional
     @Override
     public ItemDto saveNewItem(ItemDto itemDto, long userId) {
-        User user = userRepository.findById(userId)
-                .orElseThrow(() -> new ExceptionNotFound("создание item","User not found"));
+        User user = UserMapper.toUser(userService.getUser(userId));
         Item item = itemRepository.save(ItemMapper.toItem(itemDto, user));
         return ItemMapper.toDTO(item);
     }
@@ -44,8 +45,7 @@ public class ItemServiceImpl implements ItemService {
     @Transactional
     @Override
     public ItemDto saveItem(ItemDto itemDto, long userId, long itemId) {
-        User user = userRepository.findById(userId)
-                .orElseThrow(() -> new ExceptionNotFound("изменение item","User not found"));
+        User user = UserMapper.toUser(userService.getUser(userId));
         Item item = itemRepository.findById(itemId)
                 .orElseThrow(() -> new ExceptionNotFound("изменение item","Item not found"));
 
@@ -109,13 +109,16 @@ public class ItemServiceImpl implements ItemService {
 
     @Transactional
     public CommentDTO createComment(CommentDTO commentDTO, Long itemId, Long userId) {
-        User user = userRepository.findById(userId)
-                .orElseThrow(() -> new ExceptionNotFound("добавление комментария","User not found"));
+        User user = UserMapper.toUser(userService.getUser(userId));
         Booking booking = bookingRepository.findByItem_idAndBooker_idAndStart_dateBefore(itemId,userId,LocalDateTime.now()).orElseThrow(() -> new ExceptionBadRequest("comment","Не зарезервирован"));
         Item item = itemRepository.findById(itemId)
                 .orElseThrow(() -> new ExceptionNotFound("добавление комментария","Item not found"));
         Comment comment = CommentMapper.toComment(commentDTO,item,user, LocalDateTime.now());
         return CommentMapper.toDTO(commentRepository.save(comment));
+    }
+
+    public Long countByOwner_id(Long id) {
+        return itemRepository.countByOwner_id(id);
     }
 
 }

@@ -33,6 +33,16 @@ public class ItemMapper {
         );
     }
 
+    public static Item toItem(ItemWithBookingDTO itemDto, User user) {
+        return new Item(
+                itemDto.getId(),
+                itemDto.getName(),
+                itemDto.getDescription(),
+                itemDto.getIsAvailable(),
+                user
+        );
+    }
+
     public static List<ItemDto> toDTO(Iterable<Item> items) {
         List<ItemDto> result = new ArrayList<>();
         for (Item item : items) {
