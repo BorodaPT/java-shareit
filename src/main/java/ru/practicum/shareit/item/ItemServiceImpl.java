@@ -13,7 +13,6 @@ import ru.practicum.shareit.item.dto.ItemWithBookingDTO;
 import ru.practicum.shareit.item.model.Comment;
 import ru.practicum.shareit.item.model.Item;
 import ru.practicum.shareit.user.UserMapper;
-import ru.practicum.shareit.user.UserRepository;
 import ru.practicum.shareit.user.UserService;
 import ru.practicum.shareit.user.model.User;
 
@@ -102,6 +101,7 @@ public class ItemServiceImpl implements ItemService {
         return ItemMapper.toDTO(items);
     }
 
+    @Transactional
     @Override
     public void delete(long id) {
         itemRepository.deleteById(id);

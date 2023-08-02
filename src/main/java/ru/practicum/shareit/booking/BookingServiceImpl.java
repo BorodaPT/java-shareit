@@ -32,6 +32,7 @@ public class BookingServiceImpl implements BookingService {
 
     private final UserService userService;
 
+    @Transactional
     @Override
     public BookingDtoWithItemUser saveNewBooking(BookingDto bookingDto, long userId) {
         User user = UserMapper.toUser(userService.getUser(userId));
@@ -117,6 +118,7 @@ public class BookingServiceImpl implements BookingService {
         }
     }
 
+    @Transactional
     @Override
     public BookingDtoWithItemUser setStatus(Long idBooking, Long userId, Boolean isApproved) {
         Booking booking = bookingRepository.findById(idBooking).orElseThrow(() -> new ExceptionNotFound("selectBooking","Бронь не найдена"));

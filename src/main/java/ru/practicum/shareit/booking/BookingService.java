@@ -7,9 +7,10 @@ import ru.practicum.shareit.booking.model.BookingStatusRequest;
 
 import java.util.List;
 
-@Transactional
+@Transactional(readOnly = true)
 public interface BookingService {
 
+    @Transactional
     BookingDtoWithItemUser saveNewBooking(BookingDto bookingDto, long userId);
 
     BookingDtoWithItemUser getBooking(Long id, Long UserId);
@@ -18,6 +19,7 @@ public interface BookingService {
 
     List<BookingDtoWithItemUser> getForOwner(BookingStatusRequest bookingStatusRequest, Long id);
 
+    @Transactional
     BookingDtoWithItemUser setStatus(Long idBooking, Long userId, Boolean isApproved);
 
 }
