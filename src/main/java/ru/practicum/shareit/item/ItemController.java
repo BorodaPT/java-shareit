@@ -2,13 +2,12 @@ package ru.practicum.shareit.item;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
+import ru.practicum.shareit.item.dto.CommentDTO;
 import ru.practicum.shareit.item.dto.ItemDto;
-import ru.practicum.shareit.item.model.Item;
+import ru.practicum.shareit.item.dto.ItemWithBookingDTO;
 
 import javax.validation.Valid;
 import java.util.List;
-
-import static java.util.stream.Collectors.toList;
 
 
 @RestController
@@ -21,32 +20,37 @@ public class ItemController {
     @PostMapping
     public ItemDto create(@RequestHeader("X-Sharer-User-Id") Long userId,
                           @Valid @RequestBody ItemDto itemDto) {
-        Item item = ItemMapper.toItem(itemDto);
-        item.setOwner(userId);
-        return ItemMapper.toDTO(itemService.create(item));
+        return itemService.saveNewItem(itemDto,userId);
     }
 
     @PatchMapping("/{itemId}")
     public ItemDto edit(@RequestHeader("X-Sharer-User-Id") Long userId,
                         @PathVariable("itemId") Long idItem,
                         @RequestBody ItemDto itemDto) {
-        Item item = ItemMapper.toItem(itemDto);
-        return ItemMapper.toDTO(itemService.edit(item,idItem,userId));
+        return itemService.saveItem(itemDto,userId,idItem);
     }
 
     @GetMapping
-    public List<ItemDto> getItems(@RequestHeader("X-Sharer-User-Id") Long userId) {
-        return itemService.getItems(userId).stream().map(ItemMapper::toDTO).collect(toList());
+    public List<ItemWithBookingDTO> getItems(@RequestHeader("X-Sharer-User-Id") Long userId) {
+        return itemService.getItems(userId);
     }
 
     @GetMapping("/{itemId}")
-    public ItemDto get(@PathVariable("itemId") Long idItem) {
-        return ItemMapper.toDTO(itemService.get(idItem));
+    public ItemWithBookingDTO get(@RequestHeader("X-Sharer-User-Id") Long userId,
+                                  @PathVariable("itemId") Long idItem) {
+        return itemService.getItem(idItem, userId);
     }
 
     @GetMapping("/search")
     public List<ItemDto> search(@RequestParam(name = "text", required = false) String text) {
-        return itemService.search(text).stream().map(ItemMapper::toDTO).collect(toList());
+        return itemService.search(text);
+    }
+
+    @PostMapping("/{itemId}/comment")
+    public CommentDTO getWithComment(@RequestHeader("X-Sharer-User-Id") Long userId,
+                                     @PathVariable("itemId") Long idItem,
+                                     @Valid @RequestBody CommentDTO commentDTO) {
+        return itemService.createComment(commentDTO,idItem, userId);
     }
 
 }

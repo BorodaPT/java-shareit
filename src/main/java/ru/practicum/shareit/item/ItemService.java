@@ -1,36 +1,36 @@
 package ru.practicum.shareit.item;
 
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.stereotype.Service;
-import ru.practicum.shareit.item.model.Item;
+import org.springframework.transaction.annotation.Transactional;
+import ru.practicum.shareit.item.dto.CommentDTO;
+import ru.practicum.shareit.item.dto.ItemDto;
+import ru.practicum.shareit.item.dto.ItemWithBookingDTO;
+
 
 import java.util.List;
 
-@Service
-public class ItemService  {
+@Transactional(readOnly = true)
+public interface ItemService  {
 
-    @Autowired
-    @Qualifier("itemRepositoryInMemory")
-    private ItemRepository itemRepository;
+    @Transactional
+    ItemDto saveNewItem(ItemDto itemDto, long userId);
 
-    public Item create(Item item) {
-        return itemRepository.create(item);
-    }
+    @Transactional
+    ItemDto saveItem(ItemDto itemDto, long userId, long itemId);
 
-    public Item edit(Item item, long idItem, long idUser) {
-        return itemRepository.edit(item, idItem, idUser);
-    }
+    ItemWithBookingDTO getItem(long id, long userId);
 
-    public Item get(Long id) {
-        return itemRepository.get(id);
-    }
+    List<ItemWithBookingDTO> getItems(long userId);
 
-    public List<Item> getItems(Long userId) {
-        return itemRepository.getItems(userId);
-    }
+    List<ItemDto> search(String substring);
 
-    public List<Item> search(String substring) {
-        return itemRepository.search(substring);
-    }
+    @Transactional
+    void delete(long id);
+
+    @Transactional
+    CommentDTO createComment(CommentDTO commentDTO, Long itemId, Long userId);
+
+    Long countByOwner_id(Long id);
+
+
+
 }

@@ -1,21 +1,23 @@
 package ru.practicum.shareit.item.dto;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import lombok.Getter;
-import ru.practicum.shareit.request.model.ItemRequest;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
-
-@Getter
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
 public class ItemDto {
 
-    private final Long id;
+    private Long id;
 
     @NotEmpty
-    @Size(max = 100, message = "Превышена максимальная длина описания(200)")
+    @Size(max = 200, message = "Превышена максимальная длина описания(200)")
     private String name;
 
     @NotEmpty
@@ -26,13 +28,6 @@ public class ItemDto {
     @NotNull
     private Boolean isAvailable;
 
-    private ItemRequest request;
+    private Long owner;
 
-    public ItemDto(Long id, String name, String description, Boolean isAvailable,  ItemRequest request) {
-        this.id = id;
-        this.name = name;
-        this.description = description;
-        this.isAvailable = isAvailable;
-        this.request = request;
-    }
 }

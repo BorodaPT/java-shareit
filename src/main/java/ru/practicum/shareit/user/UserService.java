@@ -1,40 +1,28 @@
 package ru.practicum.shareit.user;
 
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.stereotype.Service;
-import ru.practicum.shareit.exception.ExceptionBadRequest;
-import ru.practicum.shareit.user.model.User;
+
+import org.springframework.transaction.annotation.Transactional;
+import ru.practicum.shareit.user.UserDto.UserDTO;
+
 
 import java.util.List;
 
-@Service
-public class UserService {
+@Transactional(readOnly = true)
+public interface UserService {
 
-    @Autowired
-    @Qualifier("userRepositoryInMemory")
-    private UserRepository userRepository;
+    @Transactional(readOnly = true)
+    List<UserDTO> getAllUsers();
 
-    public User getUser(long id) {
-        return userRepository.getUser(id);
-    }
+    @Transactional(readOnly = true)
+    UserDTO getUser(long id);
 
-    public List<User> getUsers() {
-        return userRepository.getUsers();
-    }
+    @Transactional
+    UserDTO saveUser(UserDTO userDto);
 
-    public User create(User user) {
-        if (user.getEmail() == null) {
-            throw new ExceptionBadRequest("createUser","В запросе Email отсутстует");
-        }
-        return userRepository.create(user);
-    }
+    @Transactional
+    UserDTO saveUser(UserDTO userDto, long id);
 
-    public User edit(User user) {
-        return userRepository.edit(user);
-    }
+    @Transactional
+    void delete(long id);
 
-    public void delete(long id) {
-        userRepository.delete(id);
-    }
 }

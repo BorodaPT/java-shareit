@@ -1,19 +1,24 @@
 package ru.practicum.shareit.user.model;
 
 import lombok.Data;
-
-import javax.validation.constraints.Email;
-import javax.validation.constraints.NotEmpty;
+import javax.persistence.*;
 
 @Data
+@Entity
+@Table(name = "users")
 public class User {
 
+    public User() {
+    }
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @NotEmpty(message = "Наименование не может быть пустым или состоять только из пробелов")
+    @Column(name="name", nullable = false)
     private String name;
 
-    @Email(message = "Неверный формат электронной почты")
+    @Column(name="email", nullable = false)
     private String email;
 
     public User(Long id, String name, String email) {
