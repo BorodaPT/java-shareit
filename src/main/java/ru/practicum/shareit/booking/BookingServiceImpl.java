@@ -1,6 +1,8 @@
 package ru.practicum.shareit.booking;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ru.practicum.shareit.booking.dto.BookingDto;
@@ -76,45 +78,84 @@ public class BookingServiceImpl implements BookingService {
     }
 
     @Override
-    public List<BookingDtoWithItemUser> getForBooker(BookingStatusRequest bookingStatusRequest, Long id) {
-
+    public List<BookingDtoWithItemUser> getForBooker(BookingStatusRequest bookingStatusRequest, Long id, Integer start, Integer size) {
+        if (start != null && size != null) {
+            if (start < 0 || size < 1) {
+                throw new ExceptionBadRequest("Получение страницы запросов", "Некорректные параметры");
+            }
+        }
         User user = UserMapper.toUser(userService.getUser(id));
-        switch (bookingStatusRequest) {
-            case CURRENT:
-                return BookingMapper.toDTOWithItemUser(bookingRepository.findByBooker_idCurrent(id));
-            case PAST:
-                return BookingMapper.toDTOWithItemUser(bookingRepository.findByBooker_idPast(id));
-            case FUTURE:
-                return BookingMapper.toDTOWithItemUser(bookingRepository.findByBooker_idFuture(id));
-            case WAITING:
-            case REJECTED:
-                return BookingMapper.toDTOWithItemUser(bookingRepository.findByBooker_idAndStatus(id,bookingStatusRequest.name()));
-            default:
-                return BookingMapper.toDTOWithItemUser(bookingRepository.findByBooker_id(id));
+        if (start == null && size == null) {
+            switch (bookingStatusRequest) {
+                case CURRENT:
+                    return BookingMapper.toDTOWithItemUser(bookingRepository.findByBooker_idCurrent(id));
+                case PAST:
+                    return BookingMapper.toDTOWithItemUser(bookingRepository.findByBooker_idPast(id));
+                case FUTURE:
+                    return BookingMapper.toDTOWithItemUser(bookingRepository.findByBooker_idFuture(id));
+                case WAITING:
+                case REJECTED:
+                    return BookingMapper.toDTOWithItemUser(bookingRepository.findByBooker_idAndStatus(id, bookingStatusRequest.name()));
+                default:
+                    return BookingMapper.toDTOWithItemUser(bookingRepository.findByBooker_id(id));
+            }
+        } else {
+            switch (bookingStatusRequest) {
+                case CURRENT:
+                    return BookingMapper.toDTOWithItemUser(bookingRepository.findByBooker_idCurrent(id, PageRequest.of((start/size), size, Sort.by("start_date").descending())).getContent());
+                case PAST:
+                    return BookingMapper.toDTOWithItemUser(bookingRepository.findByBooker_idPast(id, PageRequest.of((start/size), size, Sort.by("start_date").descending())).getContent());
+                case FUTURE:
+                    return BookingMapper.toDTOWithItemUser(bookingRepository.findByBooker_idFuture(id, PageRequest.of((start/size), size, Sort.by("start_date").descending())).getContent());
+                case WAITING:
+                case REJECTED:
+                    return BookingMapper.toDTOWithItemUser(bookingRepository.findByBooker_idAndStatus(id, bookingStatusRequest.name(), PageRequest.of((start/size), size, Sort.by("start_date").descending())).getContent());
+                default:
+                    return BookingMapper.toDTOWithItemUser(bookingRepository.findByBooker_id(id, PageRequest.of((start/size), size, Sort.by("start_date").descending())).getContent());
+            }
         }
     }
 
     @Override
-    public List<BookingDtoWithItemUser> getForOwner(BookingStatusRequest bookingStatusRequest, Long id) {
-
+    public List<BookingDtoWithItemUser> getForOwner(BookingStatusRequest bookingStatusRequest, Long id, Integer start, Integer size) {
+        if (start != null && size != null) {
+            if (start < 0 || size < 1) {
+                throw new ExceptionBadRequest("Получение страницы запросов", "Некорректные параметры");
+            }
+        }
         User user = UserMapper.toUser(userService.getUser(id));
 
         if (itemService.countByOwner_id(id) == 0) {
             throw new ExceptionNotFound("Получение списка броней для автора","Не найдены предметы для бронирования");
         }
-
-        switch (bookingStatusRequest) {
-            case CURRENT:
-                return BookingMapper.toDTOWithItemUser(bookingRepository.findByOwner_idCurrent(id));
-            case PAST:
-                return BookingMapper.toDTOWithItemUser(bookingRepository.findByOwner_idPast(id));
-            case FUTURE:
-                return BookingMapper.toDTOWithItemUser(bookingRepository.findByOwner_idFuture(id));
-            case WAITING:
-            case REJECTED:
-                return BookingMapper.toDTOWithItemUser(bookingRepository.findByOwner_idAndStatus(id,bookingStatusRequest.name()));
-            default:
-                return BookingMapper.toDTOWithItemUser(bookingRepository.findByOwner_id(id));
+        if (start == null && size == null) {
+            switch (bookingStatusRequest) {
+                case CURRENT:
+                    return BookingMapper.toDTOWithItemUser(bookingRepository.findByOwner_idCurrent(id));
+                case PAST:
+                    return BookingMapper.toDTOWithItemUser(bookingRepository.findByOwner_idPast(id));
+                case FUTURE:
+                    return BookingMapper.toDTOWithItemUser(bookingRepository.findByOwner_idFuture(id));
+                case WAITING:
+                case REJECTED:
+                    return BookingMapper.toDTOWithItemUser(bookingRepository.findByOwner_idAndStatus(id, bookingStatusRequest.name()));
+                default:
+                    return BookingMapper.toDTOWithItemUser(bookingRepository.findByOwner_id(id));
+            }
+        } else {
+            switch (bookingStatusRequest) {
+                case CURRENT:
+                    return BookingMapper.toDTOWithItemUser(bookingRepository.findByOwner_idCurrent(id, PageRequest.of((start/size), size)).getContent());
+                case PAST:
+                    return BookingMapper.toDTOWithItemUser(bookingRepository.findByOwner_idPast(id, PageRequest.of((start/size), size)).getContent());
+                case FUTURE:
+                    return BookingMapper.toDTOWithItemUser(bookingRepository.findByOwner_idFuture(id, PageRequest.of((start/size), size)).getContent());
+                case WAITING:
+                case REJECTED:
+                    return BookingMapper.toDTOWithItemUser(bookingRepository.findByOwner_idAndStatus(id, bookingStatusRequest.name(), PageRequest.of((start/size), size)).getContent());
+                default:
+                    return BookingMapper.toDTOWithItemUser(bookingRepository.findByOwner_id(id, PageRequest.of((start/size), size)).getContent());
+            }
         }
     }
 

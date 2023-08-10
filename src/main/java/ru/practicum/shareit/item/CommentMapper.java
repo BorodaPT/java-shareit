@@ -23,8 +23,10 @@ public class CommentMapper {
 
     public static List<CommentDTO> toDTO (Iterable<Comment> comments) {
         List<CommentDTO> result = new ArrayList<>();
-        for (Comment comment : comments) {
-            result.add(toDTO(comment));
+        if (comments != null) {
+            for (Comment comment : comments) {
+                result.add(toDTO(comment));
+            }
         }
         return result;
     }

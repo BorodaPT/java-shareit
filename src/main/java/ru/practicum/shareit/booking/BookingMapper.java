@@ -59,7 +59,7 @@ public class BookingMapper {
         );
     }
 
-    public static List<BookingDtoWithItemUser> toDTOWithItemUser(Iterable<Booking> bookings) {
+    public static List<BookingDtoWithItemUser> toDTOWithItemUser(List<Booking> bookings) {
         List<BookingDtoWithItemUser> result = new ArrayList<>();
         for (Booking booking : bookings) {
             result.add(toDTOWithItemUser(booking));

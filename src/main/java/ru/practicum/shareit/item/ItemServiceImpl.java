@@ -1,6 +1,7 @@
 package ru.practicum.shareit.item;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ru.practicum.shareit.booking.BookingRepository;
@@ -80,9 +81,19 @@ public class ItemServiceImpl implements ItemService {
     }
 
     @Override
-    public List<ItemWithBookingDTO> getItems(long userId) {
+    public List<ItemWithBookingDTO> getItems(long userId, Integer start, Integer size) {
+        if (start != null && size != null) {
+            if (start < 0 || size < 1) {
+                throw new ExceptionBadRequest("Получение страницы запросов", "Некорректные параметры");
+            }
+        }
         List<ItemWithBookingDTO> result = new ArrayList<>();
-        List<Item> items = itemRepository.findByOwner_id(userId);
+        List<Item> items;
+        if (start != null && size != null) {
+            items = itemRepository.findByOwner_id(userId, PageRequest.of(start, size)).getContent();
+        } else {
+            items = itemRepository.findByOwner_id(userId);
+        }
         for (Item item : items) {
             Booking bookingLast = bookingRepository.findLastBookingForItem(item.getId());
             Booking bookingNext = bookingRepository.findNextBookingForItem(item.getId());
@@ -93,10 +104,19 @@ public class ItemServiceImpl implements ItemService {
     }
 
     @Override
-    public List<ItemDto> search(String substring) {
+    public List<ItemDto> search(String substring, Integer start, Integer size) {
+        if (start != null && size != null) {
+            if (start < 0 || size < 1) {
+                throw new ExceptionBadRequest("Получение страницы запросов", "Некорректные параметры");
+            }
+        }
         List<Item> items = new ArrayList<>();
         if (!substring.equals("")) {
-            items = itemRepository.findByNameContainingOrDescriptionContaining(substring);
+            if (start != null && size != null) {
+                items = itemRepository.findByNameContainingOrDescriptionContaining(substring, PageRequest.of(start, size)).getContent();
+            } else {
+                items = itemRepository.findByNameContainingOrDescriptionContaining(substring);
+            }
         }
         return ItemMapper.toDTO(items);
     }
@@ -121,4 +141,8 @@ public class ItemServiceImpl implements ItemService {
         return itemRepository.countByOwner_id(id);
     }
 
+    @Override
+    public List<ItemDto> getByRequestId(long idRequest) {
+        return ItemMapper.toDTO(itemRepository.findByRequest_id(idRequest));
+    }
 }

@@ -20,9 +20,9 @@ public interface UserService {
     UserDTO saveUser(UserDTO userDto);
 
     @Transactional
-    UserDTO saveUser(UserDTO userDto, long id);
+    UserDTO editUser(UserDTO userDto, long id);
 
     @Transactional
-    void delete(long id);
+    void delete(Long id);
 
 }
