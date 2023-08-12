@@ -15,9 +15,9 @@ public interface BookingService {
 
     BookingDtoWithItemUser getBooking(Long id, Long UserId);
 
-    List<BookingDtoWithItemUser> getForBooker(BookingStatusRequest bookingStatusRequest, Long id);
+    List<BookingDtoWithItemUser> getForBooker(BookingStatusRequest bookingStatusRequest, Long id, Integer start, Integer size);
 
-    List<BookingDtoWithItemUser> getForOwner(BookingStatusRequest bookingStatusRequest, Long id);
+    List<BookingDtoWithItemUser> getForOwner(BookingStatusRequest bookingStatusRequest, Long id, Integer start, Integer size);
 
     @Transactional
     BookingDtoWithItemUser setStatus(Long idBooking, Long userId, Boolean isApproved);

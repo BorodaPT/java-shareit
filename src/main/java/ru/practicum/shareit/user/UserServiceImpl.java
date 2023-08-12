@@ -43,7 +43,7 @@ public class UserServiceImpl implements UserService {
 
     @Transactional
     @Override
-    public UserDTO saveUser(UserDTO userDto, long id) {
+    public UserDTO editUser(UserDTO userDto, long id) {
         User user = repository.findById(id).orElseThrow(() -> new ExceptionNotFound("selectUser","Пользователь не найден"));
         if (userDto.getName() != null && !userDto.getName().isBlank()) {
             user.setName(userDto.getName());
@@ -59,7 +59,8 @@ public class UserServiceImpl implements UserService {
         }
     }
 
-    public void delete(long id) {
+    @Override
+    public void delete(Long id) {
         repository.deleteById(id);
     }
 }

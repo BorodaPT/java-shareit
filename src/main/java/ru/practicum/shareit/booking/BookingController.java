@@ -38,24 +38,27 @@ public class BookingController {
     }
 
     @GetMapping
+    public List<BookingDtoWithItemUser> getBookingForBooker(@RequestHeader("X-Sharer-User-Id") Long userId,
+                                                            @RequestParam(name = "from", required = false) Integer start,
+                                                            @RequestParam(name = "size", required = false) Integer size,
+                                                            @RequestParam(name = "state", defaultValue ="ALL", required = false) String status) {
+        BookingStatusRequest statusEnum = checkStatus(status);
+        if (statusEnum == null) {
+            throw new ExceptionBadRequest("Error message","Unknown state: " + status);
+        }
+        return bookingService.getForBooker(statusEnum, userId, start, size);
+    }
+
+    @GetMapping("/owner")
     public List<BookingDtoWithItemUser> getBookingForOwner(@RequestHeader("X-Sharer-User-Id") Long userId,
+                                                           @RequestParam(name = "from", required = false) Integer start,
+                                                           @RequestParam(name = "size", required = false) Integer size,
                                                            @RequestParam(name = "state", defaultValue ="ALL", required = false) String status) {
         BookingStatusRequest statusEnum = checkStatus(status);
         if (statusEnum == null) {
             throw new ExceptionBadRequest("Error message","Unknown state: " + status);
         }
-        return bookingService.getForBooker(statusEnum, userId);
-    }
-
-    @GetMapping("/owner")
-    public List<BookingDtoWithItemUser> getBookingForBooker(@RequestHeader("X-Sharer-User-Id") Long userId,
-                                                @RequestParam(name = "state",
-                                                defaultValue ="ALL", required = false) String status) {
-        BookingStatusRequest statusEnum = checkStatus(status);
-        if (statusEnum == null) {
-            throw new ExceptionBadRequest("Error message","Unknown state: " + status);
-        }
-        return bookingService.getForOwner(statusEnum, userId);
+        return bookingService.getForOwner(statusEnum, userId, start, size);
     }
 
     private BookingStatusRequest checkStatus(String name) {

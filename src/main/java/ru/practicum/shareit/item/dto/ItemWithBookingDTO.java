@@ -23,6 +23,8 @@ public class ItemWithBookingDTO {
     @JsonProperty(value = "available")
     private Boolean isAvailable;
 
+    private Long requestId;
+
     private Long owner;
 
     private BookingForItemDTO lastBooking;

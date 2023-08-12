@@ -30,4 +30,6 @@ public class ItemDto {
 
     private Long owner;
 
+    private Long requestId;
+
 }

@@ -19,9 +19,9 @@ public interface ItemService  {
 
     ItemWithBookingDTO getItem(long id, long userId);
 
-    List<ItemWithBookingDTO> getItems(long userId);
+    List<ItemWithBookingDTO> getItems(long userId, Integer start, Integer size);
 
-    List<ItemDto> search(String substring);
+    List<ItemDto> search(String substring, Integer start, Integer size);
 
     @Transactional
     void delete(long id);
@@ -31,6 +31,6 @@ public interface ItemService  {
 
     Long countByOwner_id(Long id);
 
-
+    List<ItemDto> getByRequestId(long idRequest);
 
 }
