@@ -8,9 +8,6 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import ru.practicum.request.dto.ItemRequestDto;
 
-import javax.validation.constraints.Max;
-import javax.validation.constraints.Min;
-
 
 @Controller
 @RequestMapping(path = "/requests")
